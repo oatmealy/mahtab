@@ -15,9 +15,11 @@
 html{scroll-behavior:smooth}
 body{background:var(--ink);color:var(--cream);font-family:'Josefin Sans',sans-serif;font-weight:300;overflow-x:hidden}
 
-nav{position:fixed;top:0;width:100%;z-index:100;padding:1.3rem 5rem;display:flex;align-items:center;justify-content:space-between;transition:background .4s}
+nav{position:fixed;top:0;width:100%;z-index:100;padding:0 5rem;height:80px;display:flex;align-items:center;justify-content:space-between;transition:background .4s;overflow:visible}
 nav.scrolled{background:rgba(7,9,10,0.97);border-bottom:1px solid rgba(201,168,76,0.12)}
 .nav-logo img{height:250px;filter:invert(1) brightness(2)}
+.nav-hamburger{display:none;flex-direction:column;justify-content:center;gap:5px;background:none;border:none;cursor:pointer;padding:6px;z-index:101}
+.nav-hamburger span{width:22px;height:1px;background:var(--cream-dim);display:block;transition:all .3s}
 .nav-links{display:flex;gap:3rem;list-style:none}
 .nav-links a{font-size:.67rem;letter-spacing:.22em;color:var(--cream-dim);text-decoration:none;text-transform:uppercase;transition:color .3s}
 .nav-links a:hover{color:var(--gold)}
@@ -138,8 +140,12 @@ footer{background:var(--ink);border-top:1px solid rgba(201,168,76,.1);padding:4.
   .pillars{padding:0}
 }
 @media(max-width:680px){
-  nav{padding:1rem 1.5rem}
-  .nav-links,.nav-cta{display:none}
+  nav{padding:0 1.5rem}
+  .nav-logo img{height:100px}
+  .nav-links{display:none;flex-direction:column;position:fixed;top:80px;left:0;right:0;background:rgba(7,9,10,.98);padding:2rem 1.5rem;gap:1.8rem;border-bottom:1px solid rgba(201,168,76,.15);z-index:99}
+  .nav-links.open{display:flex}
+  .nav-cta{display:none}
+  .nav-hamburger{display:flex}
   .hero-content{padding:0 1.5rem;max-width:100%}
   .hero-scroll{right:1.5rem}
   h1{font-size:clamp(3rem,12vw,5rem)}
@@ -166,12 +172,15 @@ footer{background:var(--ink);border-top:1px solid rgba(201,168,76,.1);padding:4.
 
 <nav id="nav">
   <div class="nav-logo"><img src="images/Matablogo.png" alt="Mahtab"></div>
-  <ul class="nav-links">
+  <ul class="nav-links" id="nav-links">
     <li><a href="#food">Menu</a></li>
     <li><a href="#about">Our Story</a></li>
     <li><a href="#reserve">Reserve</a></li>
   </ul>
-  <a href="#reserve" class="nav-cta">Book a Table</a>
+  <a href="tel:+97313100001" class="nav-cta">Book a Table</a>
+  <button class="nav-hamburger" id="nav-hamburger" aria-label="Toggle menu">
+    <span></span><span></span><span></span>
+  </button>
 </nav>
 
 <section class="hero">
@@ -185,7 +194,7 @@ footer{background:var(--ink);border-top:1px solid rgba(201,168,76,.1);padding:4.
     <p class="hero-sub">Seaside dining · Lounge · Shisha · Block 3S, Water Garden City</p>
     <div class="hero-btns">
       <a href="#reserve" class="btn-g">Reserve a Table</a>
-      <a href="#food" class="btn-o">Explore the Menu</a>
+      <a href="https://mahtab.invopos.app/Menu?viewOnly=false&menuId=false" target="_blank" rel="noopener" class="btn-o">Explore the Menu</a>
     </div>
   </div>
   <div class="hero-scroll">
@@ -353,8 +362,9 @@ footer{background:var(--ink);border-top:1px solid rgba(201,168,76,.1);padding:4.
       <div class="fg full"><label class="fl" for="res-notes">Notes</label><input id="res-notes" type="text" class="fi" placeholder="Occasion, allergies, shisha preference..."></div>
       <div class="fg full">
         <div id="form-error" class="form-msg form-msg-error">Please fill in your name, phone number, and preferred date.</div>
-        <div id="form-success" class="form-msg form-msg-success">Your request has been sent via WhatsApp — we'll confirm shortly!</div>
+        <div id="form-success" class="form-msg form-msg-success">Your request has been sent — we'll confirm shortly!</div>
         <button type="submit" class="fsub">Reserve Now</button>
+        <a href="tel:+97313100001" style="display:block;text-align:center;margin-top:1rem;font-size:.62rem;letter-spacing:.2em;color:var(--gold-dim);text-decoration:none;text-transform:uppercase;transition:color .3s" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--gold-dim)'">or call +973 1310 0001</a>
       </div>
     </div>
   </form>
@@ -399,6 +409,16 @@ footer{background:var(--ink);border-top:1px solid rgba(201,168,76,.1);padding:4.
 // Nav scroll behaviour
 window.addEventListener('scroll', () => {
   document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 60);
+});
+
+// Hamburger menu toggle
+const hamburger = document.getElementById('nav-hamburger');
+const navLinks  = document.getElementById('nav-links');
+hamburger.addEventListener('click', () => {
+  navLinks.classList.toggle('open');
+});
+navLinks.querySelectorAll('a').forEach(a => {
+  a.addEventListener('click', () => navLinks.classList.remove('open'));
 });
 
 // Reservation form — validate, then open WhatsApp with pre-filled message
